@@ -162,6 +162,78 @@ Specijalni slučajevi:
 
 ## Logička šema
 
+### Model podataka
+
+![](docs/images/model.png)
+
+### Šema v1
+
+```
+Accident {
+    Num_Acc
+    date
+    holiday
+    col
+    int
+    condition: { 
+        lum
+        atm
+    }
+    location: { 
+        gps
+        lat
+        long
+        com
+        dep
+        population
+    }
+    road {
+        catr
+        voie
+        circ
+        nbv
+        condition: {
+            prof
+            plan
+            surf
+        }
+        infra
+        situ
+    }
+    vehicles: [
+        {
+            num_veh
+            catv
+            senc
+            occutc
+            obstacle: {
+                obs
+                obsm
+            }
+            choc
+            manv
+            users: [
+                {
+                    catu
+                    place
+                    grav
+                    sexe
+                    an_nais
+                    trajet
+                    sec     - bezbednosna oprema
+                    secutil - da li je koristio opremu (true/false)
+                    locp
+                    actp
+                    etatp
+                },
+                ...
+            ]
+        },
+        ...
+    ]
+}
+```
+
 ## Taskovi
 
 ### Gergelj
