@@ -2,7 +2,7 @@ import os.path
 import json
 import pandas as pd
 
-usersData = pd.read_csv("../users.csv")
+usersData = pd.read_csv("../dataset/users.csv")
 usersMap = {}
 
 

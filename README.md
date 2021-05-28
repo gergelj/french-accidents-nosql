@@ -160,6 +160,30 @@ Specijalni slučajevi:
 
 ![](docs/images/prostiranje_podataka.png)
 
+## Struktura datoteka
+
+```
++ french-accidents-nosql
+| + dataset
+| | - characteristics.csv
+| | - code-postal-code-insee-2015.csv
+| | - holidays.csv
+| | - places.csv
+| | - users.csv
+| | - vehicles.csv
+| + loaders
+| | - characteristicsLoader.py
+| | - usersLoader.py
+| | - vehicledLoader.py 
+| | - holidays.json
+| | - insee.json
+| | - places.json
+| | - users.json
+| | - vehicles.json
+| | - characteristics.json
+| - README.md
+```
+
 ## Logička šema
 
 ### Model podataka

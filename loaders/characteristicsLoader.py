@@ -197,7 +197,7 @@ def loadHolidays():
 			holidaysMap = json.load(infile)
 			print("Holidays loaded from file")
 	else:
-		holidaysData = pd.read_csv("../holidays.csv")
+		holidaysData = pd.read_csv("../dataset/holidays.csv")
 		for _, rowHoliday in holidaysData.iterrows():
 			if holidaysMap.get(rowHoliday["ds"]) is None:
 				holidaysMap[rowHoliday["ds"]] = rowHoliday["holiday"]
@@ -216,7 +216,7 @@ def loadPlaces():
 			placesMap = json.load(infile)
 			print("Places loaded from file")
 	else:
-		placesData = pd.read_csv("../places.csv")
+		placesData = pd.read_csv("../dataset/places.csv")
 		for _, rowPlace in placesData.iterrows():
 			if placesMap.get(rowPlace["Num_Acc"]) is None:
 				placesMap[rowPlace["Num_Acc"]] = getPlace(rowPlace)
@@ -234,7 +234,7 @@ def loadInsee():
 			inseeMap = json.load(infile)
 			print("Insee loaded from file")
 	else:
-		inseePostCodeData = pd.read_csv("../code-postal-code-insee-2015.csv", sep=";")
+		inseePostCodeData = pd.read_csv("../dataset/code-postal-code-insee-2015.csv", sep=";")
 		for _, rowInsee in inseePostCodeData.iterrows():
 			if inseeMap.get(rowInsee["INSEE_COM"]) is None:
 				inseeMap[rowInsee["INSEE_COM"]] = getInsee(rowInsee)
@@ -252,7 +252,7 @@ def loadCharacteristics():
 			characteristicsMap = json.load(infile, cls=DateTimeDecoder)
 			print("Characteristics loaded from file")
 	else:
-		characteristicsData = pd.read_csv("../characteristics.csv")
+		characteristicsData = pd.read_csv("../dataset/characteristics.csv")
 		holidaysT = threading.Thread(target=loadHolidays)
 		inseeT = threading.Thread(target=loadInsee)
 		placesT = threading.Thread(target=loadPlaces)
