@@ -166,6 +166,127 @@ Specijalni slučajevi:
 
 ![](docs/images/model.png)
 
+### Transformacija podataka u formu pogodnu za kreiranje šeme
+
+Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze podataka. Pretvorimo podatke iz običnog csv (comma-seperated values) oblika u json oblik, sa definisanim ključevima za brže pronalaženje tražene torke. Podaci su smešteni u 3 glavne datoteke i 3 pomoćne datoteke kao JSON objekti koje je moguće deserijalizovati u Python rečnike. Te datoteke sadrže sledeće strukture:
+
+1. Characteristics:
+    ```json
+    {
+        "201600000001": {
+            "date": ...,
+            "col": ...,
+            "int": ...,
+            "holiday": ...,
+            "location": {
+                "com": ...,
+                "dep": ...
+            },
+            "road": {
+                "catr": ...,
+                "condition": {
+                    ...
+                }
+            }
+            ...
+        },
+        "201600000002": {
+            ....
+        }
+    }
+    ```
+    > Ključ je ID nesreće, vrednost je podaci o nesrećama.
+2. Users:
+    ```json
+    {
+        "201600001-A01": [
+            {
+                "catu": ...,
+                "place": ...,
+                "grav": ...,
+                "sexe": ...,
+                ...
+            },
+            {
+                ...
+            }
+        ],
+        "201600001-B01": [
+            {
+                ...
+            }
+        ]
+    }
+    ```
+    > Ključ je kombinacija ID nesreće i ID vozila. Vrednost je lista učesnika u saobraćaju.
+3. Vehicles:
+    ```json
+    {
+        "2016000001": [
+            {
+                "catv": ...,
+                "senc": ...,
+                "occutc": ...,
+                "obstacle": {
+                    "obs": ...,
+                    "obsm": ...
+                }
+                ...
+            },
+            {
+                ...
+            }
+        ],
+        "2016000002": [
+            {
+                ...
+            }
+        ]
+    }
+    ```
+    > Ključ je ID nesreće, vrednost je lista vozila koji su učestvovali u nesreći.
+4. Holidays (pomoćni):
+    ```json
+    {
+        "2016-01-01": "New year",
+        "2016-05-01": "Labours day",
+        ...
+    }
+    ```
+    > Ključ je datum praznika, vrednost je ime praznika.
+5. Insee (pomoćni):
+    ```json
+    {
+        "34547": {
+            "com": ...,
+            "dep": ...,
+            "population": ...,
+            "lat": ...,
+            "long": ...
+        },
+        "28456": {
+            ...
+        }
+    }
+    ```
+    > Ključ je INSEE kod opštine, vrednost su podaci o opštini.
+6. Places (pomoćni):
+    ```json
+    {
+        "2016000001": {
+            "catr": ...,
+            "condition": {
+                ...
+            },
+            ...
+        },
+        "2016000002": {
+            ...
+        }
+    }
+    ```
+    > Ključ je ID nesreće, vrednost je podaci o mestu nesreće.
+
 ### Šema v1
 
 ```
