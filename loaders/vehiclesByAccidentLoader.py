@@ -3,11 +3,7 @@ import os.path
 import json
 
 csvPath = "../dataset/vehicles.csv"
-jsonPath = "json/vehicles.json"
-
-def getVehicleKey(num_acc, num_veh):
-	return str(num_acc) + "-" + num_veh
-
+jsonPath = "json/vehiclesByAccident.json"
 
 def getVehicle(vehicleDf):
 	vehicle = {}
@@ -46,8 +42,10 @@ def loadVehicles():
 	else:
 		vehiclesData = pd.read_csv(csvPath)
 		for _, rowVehicle in vehiclesData.iterrows():
-			if vehiclesMap.get(getVehicleKey(rowVehicle["Num_Acc"], rowVehicle["num_veh"])) is None:
-				vehiclesMap[getVehicleKey(rowVehicle["Num_Acc"], rowVehicle["num_veh"])] = getVehicle(rowVehicle)
+			if vehiclesMap.get(rowVehicle["Num_Acc"]) is None:
+				vehiclesMap[rowVehicle["Num_Acc"]] = [getVehicle(rowVehicle)]
+			else:
+				vehiclesMap[rowVehicle["Num_Acc"]].append(getVehicle(rowVehicle))
 		with open(jsonPath, 'w') as outfile:
 			json.dump(vehiclesMap, outfile)	
 		print("Vehicles loaded in memory and saved to file")

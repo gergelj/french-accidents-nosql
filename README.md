@@ -17,7 +17,9 @@ Iako fatalnost saobraćajnih nesreća u Francuskoj smanjuje svake godine, na god
 U ovom projektu bavićemo se uzrocima saobraćajnih nesreća, zašto i u kojoj meri oni utiču na ishod saobraćajne nezgode.
 
 
-## Dataset
+
+<details>
+  <summary>Dataset</summary>
 
 Dataset se sastoji od 6 CSV datoteka koje nam pružaju podatke o:
 - samim nesrećama - `characteristics.csv`,
@@ -42,7 +44,10 @@ Pri izradi projekta je korišćena [MongoDB](https://www.mongodb.com/) dokument 
 > Dataset attributes definition: [link][dataset-attributes] or [PDF](docs/description-des-bases-de-donnees-onisr-annees-2005-a-2018.pdf)  
 > French INSEE dataset: [dataset][dataset-insee]
 
-## Obeležja skupa podataka
+</details>
+
+<details>
+  <summary>Obeležja skupa podataka</summary>
 
 ### `characteristics.csv`
 
@@ -156,6 +161,8 @@ Specijalni slučajevi:
 - dep = 202 -> dd = 2B
 - dep brojevi 971, 972, 973, 974, 975 i 976 su prekookeanske teritorije Francuske, te nisu u ovom skupu podataka
 
+</details>
+
 ## Primer prostiranja podataka kroz datoteke
 
 ![](docs/images/prostiranje_podataka.png)
@@ -172,15 +179,17 @@ Specijalni slučajevi:
 | | - users.csv
 | | - vehicles.csv
 | + loaders
+| | + json
+| | | - characteristics.json
+| | | - holidays.json
+| | | - insee.json
+| | | - places.json
+| | | - users.json
+| | | - vehicles.json
+| | | - vehiclesByAccident.json
 | | - characteristicsLoader.py
 | | - usersLoader.py
 | | - vehicledLoader.py 
-| | - holidays.json
-| | - insee.json
-| | - places.json
-| | - users.json
-| | - vehicles.json
-| | - characteristics.json
 | - README.md
 ```
 
@@ -194,7 +203,7 @@ Specijalni slučajevi:
 
 Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze podataka. Pretvorimo podatke iz običnog csv (comma-seperated values) oblika u json oblik, sa definisanim ključevima za brže pronalaženje tražene torke. Podaci su smešteni u 3 glavne datoteke i 3 pomoćne datoteke kao JSON objekti koje je moguće deserijalizovati u Python rečnike. Te datoteke sadrže sledeće strukture:
 
-1. Characteristics:
+- characteristics.json:
     ```json
     {
         "201600000001": {
@@ -220,7 +229,7 @@ Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze po
     }
     ```
     > Ključ je ID nesreće, vrednost je podaci o nesrećama.
-2. Users:
+- users.json:
     ```json
     {
         "201600001-A01": [
@@ -243,7 +252,7 @@ Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze po
     }
     ```
     > Ključ je kombinacija ID nesreće i ID vozila. Vrednost je lista učesnika u saobraćaju.
-3. Vehicles:
+- vehiclesByAccident.json:
     ```json
     {
         "2016000001": [
@@ -269,7 +278,27 @@ Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze po
     }
     ```
     > Ključ je ID nesreće, vrednost je lista vozila koji su učestvovali u nesreći.
-4. Holidays (pomoćni):
+- vehicles.json:
+    ```json
+    {
+        "2016000001-A01": {
+                "catv": ...,
+                "senc": ...,
+                "occutc": ...,
+                "obstacle": {
+                    "obs": ...,
+                    "obsm": ...
+                }
+                ...
+        }
+        ,
+        "2016000002-B02": {
+                ...
+        }
+    }
+    ```
+    > Ključ je ID nesreće i oznaka vozila, vrednost je vozilo koje je učestvovalo u nesreći.
+- holidays.json:
     ```json
     {
         "2016-01-01": "New year",
@@ -278,7 +307,7 @@ Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze po
     }
     ```
     > Ključ je datum praznika, vrednost je ime praznika.
-5. Insee (pomoćni):
+- insee.json:
     ```json
     {
         "34547": {
@@ -294,7 +323,7 @@ Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze po
     }
     ```
     > Ključ je INSEE kod opštine, vrednost su podaci o opštini.
-6. Places (pomoćni):
+- places.json:
     ```json
     {
         "2016000001": {
@@ -311,7 +340,9 @@ Transformacijom podataka dobijemo na performansama prilikom popunjavanja baze po
     ```
     > Ključ je ID nesreće, vrednost je podaci o mestu nesreće.
 
-### Šema v1
+### Šema
+
+#### Accidents collection - [`accidentsCollection.py`](loaders/accidentsCollection.py)
 
 ```
 Accident {
@@ -379,6 +410,68 @@ Accident {
 }
 ```
 
+#### Users collection - [`usersCollection.py`](loaders/usersCollection.py)
+
+```json
+user: {
+    catu
+    place
+    grav
+    sexe
+    an_nais
+    trajet
+    sec     - bezbednosna oprema
+    secutil - da li je koristio opremu (true/false)
+    locp
+    actp
+    etatp
+    accident: {
+        Num_Acc
+        date
+        holiday
+        col
+        int
+        condition: { 
+            lum
+            atm
+        }
+        location: { 
+            gps
+            lat
+            long
+            com
+            dep
+            population
+        }
+        road {
+            catr
+            voie
+            circ
+            nbv
+            condition: {
+                prof
+                plan
+                surf
+            }
+            infra
+            situ
+        }
+    }
+    vehicle: {
+        num_veh
+        catv
+        senc
+        occutc
+        obstacle: {
+            obs
+            obsm
+        }
+        choc
+        manv
+    }
+}
+```
+
 ## Taskovi
 
 ### Gergelj
@@ -386,9 +479,9 @@ Accident {
 1. Da li su kružni tokovi ili raskrsnice opasnije:
 - u normalnim uslovima?
 - kada je površina puta mokra?
-2. U zavisnosti od starosti vozača, šta su najčešći manevri koji dovode do saobraćajne nesreće prilikom upravljanja vozilom?
+2. U zavisnosti od starosti kolika je verovatnoća da će vozač udariti pešaka prilikom udesa?
 3. Koliko životinja je izazvao saobraćajnu nesreću na putevima Francuske? Da li je broj veći noću ili tokom dana?
-4. Koliko prosečno ima povređenih i preminulih u saobraćajnim nesrećima u zavisnosti od korišćenja ili ne korišćenja sigurnosne opreme?
+4. Koliko prosečno ima teško povređenih i preminulih u saobraćajnim nesrećima u zavisnosti od korišćenja ili ne korišćenja sigurnosne opreme?
 5. Da li se prosečno desi više teških nesreća tokom prazničnih dana?
 
 ### Stefan

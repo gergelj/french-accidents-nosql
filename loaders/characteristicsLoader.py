@@ -5,17 +5,17 @@ import json
 from json import JSONDecoder
 from json import JSONEncoder
 from datetime import datetime
-import dateutil.parser
 
-characteristicsData = None
-inseePostCodeData = None
-holidaysData = None
-placesData = None
 
-characteristicsMap = {}
-holidaysMap = {}
-placesMap = {}
-inseeMap = {}
+csvCharacteristics = "../dataset/characteristics.csv"
+csvHolidays = "../dataset/holidays.csv"
+csvPlaces = "../dataset/places.csv"
+csvInsee = "../dataset/code-postal-code-insee-2015.csv"
+
+jsonCharacteristics = "json/characteristics.json"
+jsonHolidays = "json/holidays.json"
+jsonPlaces = "json/places.json"
+jsonInsee = "json/insee.json"
 
 class DateTimeDecoder(JSONDecoder):
 
@@ -132,7 +132,7 @@ def getPlace(placeDf):
 	return place
 
 
-def getCharacteristic(dataFrame):
+def getCharacteristic(dataFrame, holidaysMap, inseeMap, placesMap):
 	c = {}
 	c["Num_Acc"] = int(dataFrame["Num_Acc"])
 	hrmn = str(dataFrame["hrmn"]).zfill(4)
@@ -178,96 +178,88 @@ def getCharacteristic(dataFrame):
 	if location:
 		c["location"] = location
 
-	road = placesMap.get(dataFrame["Num_Acc"])
+	road = placesMap.get(str(dataFrame["Num_Acc"]))
 	if road is not None:
 		c["road"] = road
-		
-	#vehicles = vehiclesMap.get(dataFrame["Num_Acc"])
-	#if vehicles is not None:
-    #	c["vehicles"] = vehicles
 	
 	return c
 
 def loadHolidays():
-	global holidaysMap
-	global holidaysData
+	holidaysMap = {}
 	print("Started loading holidays")
-	if os.path.isfile('holidays.json'):
-		with open('holidays.json') as infile:
+	if os.path.isfile(jsonHolidays):
+		with open(jsonHolidays) as infile:
 			holidaysMap = json.load(infile)
 			print("Holidays loaded from file")
 	else:
-		holidaysData = pd.read_csv("../dataset/holidays.csv")
+		holidaysData = pd.read_csv(csvHolidays)
 		for _, rowHoliday in holidaysData.iterrows():
 			if holidaysMap.get(rowHoliday["ds"]) is None:
 				holidaysMap[rowHoliday["ds"]] = rowHoliday["holiday"]
 				
-		with open('holidays.json', 'w') as outfile:
+		with open(jsonHolidays, 'w') as outfile:
 			json.dump(holidaysMap, outfile)	
 		print("Holidays loaded in memory and saved to file")
 
+	return holidaysMap
+
 
 def loadPlaces():
-	global placesMap
-	global placesData
+	placesMap = {}
 	print("Started loading places")
-	if os.path.isfile('places.json'):
-		with open('places.json') as infile:
+	if os.path.isfile(jsonPlaces):
+		with open(jsonPlaces) as infile:
 			placesMap = json.load(infile)
 			print("Places loaded from file")
 	else:
-		placesData = pd.read_csv("../dataset/places.csv")
+		placesData = pd.read_csv(csvPlaces)
 		for _, rowPlace in placesData.iterrows():
 			if placesMap.get(rowPlace["Num_Acc"]) is None:
 				placesMap[rowPlace["Num_Acc"]] = getPlace(rowPlace)
-		with open('places.json', 'w') as outfile:
+		with open(jsonPlaces, 'w') as outfile:
 			json.dump(placesMap, outfile)	
 		print("Places loaded in memory and saved to file")
 
+	return placesMap
+
 
 def loadInsee():
-	global inseeMap
-	global inseePostCodeData
+	inseeMap = {}
 	print("Started loading insee")
-	if os.path.isfile('insee.json'):
-		with open('insee.json') as infile:
+	if os.path.isfile(jsonInsee):
+		with open(jsonInsee) as infile:
 			inseeMap = json.load(infile)
 			print("Insee loaded from file")
 	else:
-		inseePostCodeData = pd.read_csv("../dataset/code-postal-code-insee-2015.csv", sep=";")
+		inseePostCodeData = pd.read_csv(csvInsee, sep=";")
 		for _, rowInsee in inseePostCodeData.iterrows():
 			if inseeMap.get(rowInsee["INSEE_COM"]) is None:
 				inseeMap[rowInsee["INSEE_COM"]] = getInsee(rowInsee)
-		with open('insee.json', 'w') as outfile:
+		with open(jsonInsee, 'w') as outfile:
 			json.dump(inseeMap, outfile)
 		print("Insee loaded in memory and saved to file")
 
+	return inseeMap
+
 
 def loadCharacteristics():
-	global characteristicsMap
-	global characteristicsData
+	characteristicsMap = {}
 	print("Started loading characteristics")
-	if os.path.isfile('characteristics.json'):
-		with open('characteristics.json') as infile:
+	if os.path.isfile(jsonCharacteristics):
+		with open(jsonCharacteristics) as infile:
 			characteristicsMap = json.load(infile, cls=DateTimeDecoder)
 			print("Characteristics loaded from file")
 	else:
-		characteristicsData = pd.read_csv("../dataset/characteristics.csv")
-		holidaysT = threading.Thread(target=loadHolidays)
-		inseeT = threading.Thread(target=loadInsee)
-		placesT = threading.Thread(target=loadPlaces)
-		holidaysT.start()
-		placesT.start()
-		inseeT.start()
-		holidaysT.join()
-		placesT.join()
-		inseeT.join()
+		characteristicsData = pd.read_csv(csvCharacteristics)
+		holidaysMap = loadHolidays()
+		inseeMap = loadInsee()
+		placesMap = loadPlaces()
+
 		for _, rowCharacteristic in characteristicsData.iterrows():
 			if characteristicsMap.get(rowCharacteristic["Num_Acc"]) is None:
-				characteristicsMap[rowCharacteristic["Num_Acc"]] = getCharacteristic(rowCharacteristic)
-		with open('characteristics.json', 'w') as outfile:
+				characteristicsMap[rowCharacteristic["Num_Acc"]] = getCharacteristic(rowCharacteristic, holidaysMap, inseeMap, placesMap)
+		with open(jsonCharacteristics, 'w') as outfile:
 			json.dump(characteristicsMap, outfile, cls=DateTimeEncoder)
 		print("Characteristics loaded in memory and saved to file")
 
-
-loadCharacteristics()
+	return characteristicsMap
