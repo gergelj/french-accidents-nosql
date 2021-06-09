@@ -486,12 +486,11 @@ user: {
 
 ### Stefan
 
-1. Raspored povreda pri sudaru sa domaćim i divljim životinjama na putu
-2. Poređenje težina povreda sa vezanim pojasem i bez njega van i u urbanom područiju
-3. Poređenje težina povreda vozača motocikala, automobila, kamiona i javnog prevoza
-4. Poređenje povredava vozača automobila i suvozača u istom frontalnom sudaru
-5. Poređenje procenta sudara vozila i pešaka prilikom preticanja, skretanja i bez promene pravca
-6. Poređenje broja udesa tokom noći, van urbanog područija i bez osvetljenja kada vozač vozi sam i kada ima putnike
+1. Odnos povreda i broj saobraćajnih nesreća pri sudaru sa domaćim i divljim životinjama na putu
+2. Poređenje verovatnoće teških povreda vozača i suvozača motocikala i automobila
+3. Poređenje broja udesa tokom noći, van urbanog područija sa i bez osvetljenja kada vozač vozi sam i kada ima putnike
+4. Poređenje broja sudara vozila i pešaka i težine povreda pešaka prilikom preticanja, skretanja i bez promene pravca u urbanom području
+5. Poređenje smrtnih ishoda vozača automobila i suvozača u istom frontalnom sudaru
 
 
 [1]: https://en.wikipedia.org/wiki/Transport_in_France
