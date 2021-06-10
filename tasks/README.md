@@ -58,4 +58,13 @@ b) Za tešku nesreću sam uzeo te nesreće gde je bar jedan učesnik preminuo il
 
 ## Stefan
 
-
+### 1. Odnos povreda i broj saobraćajnih nesreća pri sudaru sa domaćim i divljim životinjama na putu
+![](graphs/2_1.png)
+### 2. Poređenje verovatnoće teških povreda vozača i suvozača motocikala i automobila
+![](graphs/2_2.png)
+### 3. Poređenje broja udesa tokom noći, van urbanog područija sa i bez osvetljenja kada vozač vozi sam i kada ima putnike
+![](graphs/2_3.png)
+### 4. Poređenje broja sudara vozila i pešaka i težine povreda pešaka prilikom preticanja, skretanja i bez promene pravca u urbanom području
+![](graphs/2_4.png)
+### 5. Poređenje smrtnih ishoda vozača automobila i suvozača u istom frontalnom sudaru
+![](graphs/2_5.png)
