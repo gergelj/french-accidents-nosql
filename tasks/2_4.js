@@ -8,5 +8,6 @@ db.users.aggregate([
                 fatal: {$sum: {$cond: [{ $eq: ["$grav", 2]}, 1, 0]}},
                 injured: {$sum: {$cond: [{ $eq: ["$grav", 3]}, 1, 0]}},
             }
-    }}
+    }},
+    {$project: {totalAccidents: "$totalAccidents", fatalRatio: {$divide: ["$fatal", "$totalAccidents"]}, injuredRatio: {$divide: ["$injured", "$totalAccidents"]}}}
     ])
