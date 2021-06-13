@@ -13,3 +13,7 @@ Iz rezultata izvršenja samih upita se vidi da u svakom upitu `group` pipeline u
 Za Task 1_1 je iskorišćen indeks `int` (tip raskrsnice) napravljen nad kolekcijom `accidents`:
 
 ![](graphs/performanse/1_1_index.png)
+
+
+## Grafik poredi performanse izvršavanja 2_1 - 2_5 upita bez i sa indeksima
+![](graphs/performanse/index_performance.png)
